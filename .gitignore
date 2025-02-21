@@ -1,0 +1,4 @@
+.env
+svc-acc-keys.json
+env/*
+utils/__pycache__/*
