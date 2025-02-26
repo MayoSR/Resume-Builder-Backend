@@ -36,15 +36,19 @@ def get_openai_response(resume_content, job_desc):
 
     
 def process_openai_response(json_data):
+    print('Received request to process OpenAI response')
     resume_content = extract_lines_from_doc(json_data['documentId'])
     fontFamily = json_data['fontFamily']
     companyName = json_data['companyName']
     job_desc = json_data['jobDesc']
     
     service = get_docs_service()
+    print('Extracted resume content')
     response = get_openai_response(resume_content, job_desc)
+    print('Received OpenAI response')
 
     parsed_response = response.choices[0].message.content
     timestamp = datetime.datetime.now().strftime('%Y-%m-%d')
     copied_doc_id = copy_google_doc(json_data['documentId'], f"Resume for {companyName}-{timestamp}")
     update_google_doc(service, copied_doc_id, ast.literal_eval(str(parsed_response.lstrip('```json\n').rstrip('```\n'))), fontFamily)
+    print('Updated Google Doc with OpenAI response')
